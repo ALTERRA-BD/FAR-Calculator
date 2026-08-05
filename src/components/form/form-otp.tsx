@@ -1,6 +1,5 @@
 "use client";
 
-import { ComponentProps } from "react";
 import {
   Control,
   Controller,
@@ -8,9 +7,13 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "../ui/input-otp";
 
-type FormInputProps<
+type FormOTPProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
@@ -18,10 +21,10 @@ type FormInputProps<
   control: Control<TFieldValues>;
   label?: string;
   description?: string;
-  inputProps?: ComponentProps<typeof Input>;
+  maxLength?: number;
 };
 
-const FormInput = <
+const FormOTP = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
@@ -29,8 +32,8 @@ const FormInput = <
   control,
   label,
   description,
-  inputProps,
-}: FormInputProps<TFieldValues, TName>) => {
+  maxLength = 6,
+}: FormOTPProps<TFieldValues, TName>) => {
   const id = `form-${name}`;
 
   return (
@@ -40,12 +43,24 @@ const FormInput = <
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
           {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
-          <Input
-            {...field}
-            {...inputProps}
+          <InputOTP
             id={id}
-            aria-invalid={fieldState.invalid}
-          />
+            maxLength={maxLength}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            disabled={field.disabled}
+          >
+            <InputOTPGroup>
+              {Array.from({ length: maxLength }, (_, index) => (
+                <InputOTPSlot
+                  key={index}
+                  index={index}
+                  aria-invalid={fieldState.invalid}
+                />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>
           {description && <FieldDescription>{description}</FieldDescription>}
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>
@@ -54,4 +69,4 @@ const FormInput = <
   );
 };
 
-export default FormInput;
+export default FormOTP;

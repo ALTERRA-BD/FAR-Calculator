@@ -8,9 +8,14 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroupTextarea,
+} from "../ui/input-group";
 
-type FormInputProps<
+type FormTextareaProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
@@ -18,10 +23,11 @@ type FormInputProps<
   control: Control<TFieldValues>;
   label?: string;
   description?: string;
-  inputProps?: ComponentProps<typeof Input>;
+  maxLength?: number;
+  textareaProps?: ComponentProps<typeof InputGroupTextarea>;
 };
 
-const FormInput = <
+const FormTextarea = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
@@ -29,8 +35,9 @@ const FormInput = <
   control,
   label,
   description,
-  inputProps,
-}: FormInputProps<TFieldValues, TName>) => {
+  maxLength,
+  textareaProps,
+}: FormTextareaProps<TFieldValues, TName>) => {
   const id = `form-${name}`;
 
   return (
@@ -40,12 +47,22 @@ const FormInput = <
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
           {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
-          <Input
-            {...field}
-            {...inputProps}
-            id={id}
-            aria-invalid={fieldState.invalid}
-          />
+          <InputGroup>
+            <InputGroupTextarea
+              {...field}
+              {...textareaProps}
+              id={id}
+              maxLength={maxLength}
+              aria-invalid={fieldState.invalid}
+            />
+            {maxLength && (
+              <InputGroupAddon align="block-end">
+                <InputGroupText className="tabular-nums">
+                  {(field.value?.length ?? 0)}/{maxLength} characters
+                </InputGroupText>
+              </InputGroupAddon>
+            )}
+          </InputGroup>
           {description && <FieldDescription>{description}</FieldDescription>}
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>
@@ -54,4 +71,4 @@ const FormInput = <
   );
 };
 
-export default FormInput;
+export default FormTextarea;

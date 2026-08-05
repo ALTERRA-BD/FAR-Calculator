@@ -7,30 +7,28 @@ import {
   FieldPath,
   FieldValues,
 } from "react-hook-form";
-import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Checkbox } from "../ui/checkbox";
 
-type FormInputProps<
+type FormCheckboxProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName;
   control: Control<TFieldValues>;
   label?: string;
-  description?: string;
-  inputProps?: ComponentProps<typeof Input>;
+  checkboxProps?: ComponentProps<typeof Checkbox>;
 };
 
-const FormInput = <
+const FormCheckbox = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   name,
   control,
   label,
-  description,
-  inputProps,
-}: FormInputProps<TFieldValues, TName>) => {
+  checkboxProps,
+}: FormCheckboxProps<TFieldValues, TName>) => {
   const id = `form-${name}`;
 
   return (
@@ -38,15 +36,20 @@ const FormInput = <
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid}>
-          {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
-          <Input
-            {...field}
-            {...inputProps}
+        <Field
+          orientation="horizontal"
+          data-invalid={fieldState.invalid}
+        >
+          <Checkbox
+            {...checkboxProps}
             id={id}
+            checked={field.value}
+            onCheckedChange={field.onChange}
+            onBlur={field.onBlur}
+            disabled={field.disabled}
             aria-invalid={fieldState.invalid}
           />
-          {description && <FieldDescription>{description}</FieldDescription>}
+          {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>
       )}
@@ -54,4 +57,4 @@ const FormInput = <
   );
 };
 
-export default FormInput;
+export default FormCheckbox;

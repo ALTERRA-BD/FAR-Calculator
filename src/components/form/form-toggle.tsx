@@ -1,36 +1,37 @@
 "use client";
 
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 import {
   Control,
   Controller,
   FieldPath,
   FieldValues,
 } from "react-hook-form";
-import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import { Field, FieldError, FieldLabel } from "../ui/field";
+import { Toggle } from "../ui/toggle";
+import { cn } from "@/lib/utils";
 
-type FormInputProps<
+type FormToggleProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName;
   control: Control<TFieldValues>;
   label?: string;
-  description?: string;
-  inputProps?: ComponentProps<typeof Input>;
+  children: ReactNode;
+  toggleProps?: ComponentProps<typeof Toggle>;
 };
 
-const FormInput = <
+const FormToggle = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
   name,
   control,
   label,
-  description,
-  inputProps,
-}: FormInputProps<TFieldValues, TName>) => {
+  children,
+  toggleProps,
+}: FormToggleProps<TFieldValues, TName>) => {
   const id = `form-${name}`;
 
   return (
@@ -40,13 +41,22 @@ const FormInput = <
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
           {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
-          <Input
-            {...field}
-            {...inputProps}
+          <Toggle
+            variant="outline"
+            {...toggleProps}
             id={id}
+            pressed={field.value}
+            onPressedChange={field.onChange}
+            onBlur={field.onBlur}
+            disabled={field.disabled}
             aria-invalid={fieldState.invalid}
-          />
-          {description && <FieldDescription>{description}</FieldDescription>}
+            className={cn(
+              "w-fit data-pressed:border-primary data-pressed:bg-primary/10 data-pressed:text-primary",
+              toggleProps?.className
+            )}
+          >
+            {children}
+          </Toggle>
           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
         </Field>
       )}
@@ -54,4 +64,4 @@ const FormInput = <
   );
 };
 
-export default FormInput;
+export default FormToggle;

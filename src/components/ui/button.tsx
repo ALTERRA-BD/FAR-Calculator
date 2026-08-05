@@ -1,5 +1,7 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Loader2Icon } from "lucide-react"
+import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -42,14 +44,40 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  icon,
+  iconPosition = "inline-start",
+  loading = false,
+  disabled,
+  children,
   ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+}: ButtonPrimitive.Props &
+  VariantProps<typeof buttonVariants> & {
+    icon?: ReactNode
+    iconPosition?: "inline-start" | "inline-end"
+    loading?: boolean
+  }) {
+  const resolvedIcon = loading ? (
+    <Loader2Icon className="animate-spin" />
+  ) : (
+    icon
+  )
+
   return (
     <ButtonPrimitive
       data-slot="button"
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {resolvedIcon && iconPosition === "inline-start" && (
+        <span data-icon="inline-start">{resolvedIcon}</span>
+      )}
+      {children}
+      {resolvedIcon && iconPosition === "inline-end" && (
+        <span data-icon="inline-end">{resolvedIcon}</span>
+      )}
+    </ButtonPrimitive>
   )
 }
 

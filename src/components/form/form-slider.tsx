@@ -1,6 +1,5 @@
 "use client";
 
-import { ComponentProps } from "react";
 import {
   Control,
   Controller,
@@ -8,9 +7,9 @@ import {
   FieldValues,
 } from "react-hook-form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
-import { Input } from "../ui/input";
+import { Slider } from "../ui/slider";
 
-type FormInputProps<
+type FormSliderProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
@@ -18,10 +17,13 @@ type FormInputProps<
   control: Control<TFieldValues>;
   label?: string;
   description?: string;
-  inputProps?: ComponentProps<typeof Input>;
+  min?: number;
+  max?: number;
+  step?: number;
+  showValue?: boolean;
 };
 
-const FormInput = <
+const FormSlider = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
@@ -29,8 +31,11 @@ const FormInput = <
   control,
   label,
   description,
-  inputProps,
-}: FormInputProps<TFieldValues, TName>) => {
+  min = 0,
+  max = 100,
+  step = 1,
+  showValue = true,
+}: FormSliderProps<TFieldValues, TName>) => {
   const id = `form-${name}`;
 
   return (
@@ -39,11 +44,27 @@ const FormInput = <
       control={control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
-          <Input
-            {...field}
-            {...inputProps}
+          {label && (
+            <FieldLabel htmlFor={id}>
+              {label}
+              {showValue && (
+                <span className="ml-auto text-muted-foreground tabular-nums">
+                  {field.value}
+                </span>
+              )}
+            </FieldLabel>
+          )}
+          <Slider
             id={id}
+            min={min}
+            max={max}
+            step={step}
+            value={[field.value ?? min]}
+            onValueChange={(next) =>
+              field.onChange(Array.isArray(next) ? next[0] : next)
+            }
+            onBlur={field.onBlur}
+            disabled={field.disabled}
             aria-invalid={fieldState.invalid}
           />
           {description && <FieldDescription>{description}</FieldDescription>}
@@ -54,4 +75,4 @@ const FormInput = <
   );
 };
 
-export default FormInput;
+export default FormSlider;
