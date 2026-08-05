@@ -30,6 +30,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   const form = useRHF({
@@ -46,7 +47,7 @@ export default function Home() {
   }
 
   return (
-    <Card className="mx-auto max-w-xl py-0 rounded-md">
+    <Card className="mx-auto max-w-xl py-0">
       <CardHeader className="space-y-1 border-b bg-muted/40 pt-4">
         <CardTitle>Testing Form Components</CardTitle>
         <CardDescription>
@@ -58,6 +59,7 @@ export default function Home() {
       </CardHeader>
       <CardContent>
         <form id="bug-form" onSubmit={form.handleSubmit(onSubmit)}>
+          
           <FieldGroup>
             {/* FormInput */}
             <FormInput
