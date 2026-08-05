@@ -96,7 +96,9 @@ export default function Home() {
                 { value: "bug", label: "Bug" },
                 { value: "feature", label: "Feature Request" },
                 { value: "question", label: "Question" },
+                { value: "other", label: "Other" },
               ]}
+              searchable
             />
 
             {/* FormRadioGroup (choice card) */}
