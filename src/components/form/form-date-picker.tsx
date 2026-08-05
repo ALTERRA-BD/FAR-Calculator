@@ -48,6 +48,7 @@ const FormDatePicker = <
           {label && <FieldLabel htmlFor={id}>{label}</FieldLabel>}
           <Popover>
             <PopoverTrigger
+             className='shadow'
               render={
                 <Button
                   id={id}

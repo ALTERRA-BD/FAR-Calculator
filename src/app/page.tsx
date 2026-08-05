@@ -59,7 +59,6 @@ export default function Home() {
       </CardHeader>
       <CardContent>
         <form id="bug-form" onSubmit={form.handleSubmit(onSubmit)}>
-          
           <FieldGroup>
             {/* FormInput */}
             <FormInput
@@ -167,7 +166,7 @@ export default function Home() {
               label="Budget Range ($)"
               min={0}
               max={200}
-              step={5}
+              step={10}
             />
 
             {/* FormToggle */}
@@ -179,7 +178,12 @@ export default function Home() {
       </CardContent>
 
       <CardFooter className="justify-end gap-2 border-t bg-muted/40 pb-(--card-spacing)">
-        <Button type="button" variant="outline" onClick={() => form.reset()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => form.reset()}
+          className="shadow"
+        >
           Reset
         </Button>
         <Button
@@ -187,6 +191,7 @@ export default function Home() {
           type="submit"
           loading={submitting}
           icon={<SendIcon />}
+          className="shadow"
         >
           Submit
         </Button>
